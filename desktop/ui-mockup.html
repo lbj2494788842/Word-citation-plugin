@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>Word 引用插入 - UI 设计稿</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: #e8e8e8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+    }
+    .app {
+      width: 420px;
+      min-height: 600px;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== 状态栏 ===== */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      padding: 8px 16px;
+      border-bottom: 1px solid #e0e0e0;
+      background: #fafafa;
+      gap: 6px;
+    }
+    .status-label {
+      font-size: 13px;
+      color: #555;
+    }
+    .status-ok {
+      font-weight: bold;
+      color: #107c10;
+    }
+    .spacer { flex: 1; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0 10px;
+      height: 24px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .badge-green {
+      background: #107c10;
+      color: white;
+    }
+    .badge-blue {
+      background: #0078d4;
+      color: white;
+    }
+    .badge-gray {
+      background: #e0e0e0;
+      color: #666;
+    }
+
+    /* ===== 主体内容 ===== */
+    .content {
+      padding: 14px 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .section-title {
+      font-size: 13px;
+      color: #333;
+      margin-bottom: 6px;
+    }
+
+    /* ===== 输入区 ===== */
+    .input-area {
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 8px 10px;
+      min-height: 90px;
+      font-size: 12px;
+      color: #333;
+      line-height: 1.6;
+      background: #fff;
+      font-family: "Consolas", monospace;
+    }
+    .input-area .line {
+      opacity: 0.85;
+    }
+    .input-area .hl {
+      color: #0078d4;
+      font-weight: bold;
+    }
+
+    .btn-row {
+      display: flex;
+      align-items: center;
+      margin-top: 6px;
+      gap: 8px;
+    }
+    .btn-primary {
+      background: #0078d4;
+      color: white;
+      border: none;
+      padding: 6px 18px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .btn-secondary {
+      background: #e8e8e8;
+      color: #444;
+      border: 1px solid #ccc;
+      padding: 5px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .count-tag {
+      margin-left: auto;
+      font-size: 12px;
+      color: #888;
+    }
+
+    /* ===== Divider ===== */
+    .divider {
+      height: 0;
+      border-top: 1px solid #eee;
+      margin: 12px 0;
+    }
+
+    /* ===== 引用卡片列表 ===== */
+    .list-label {
+      font-size: 13px;
+      color: #333;
+      margin-bottom: 8px;
+    }
+    .card-list {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .card {
+      display: flex;
+      align-items: center;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 8px 10px;
+      background: white;
+      gap: 10px;
+    }
+    .card-num {
+      background: #f0f4f8;
+      color: #0078d4;
+      font-weight: bold;
+      font-size: 13px;
+      padding: 2px 10px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+    .card-text {
+      flex: 1;
+      font-size: 12px;
+      color: #333;
+      line-height: 1.4;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .card-btn {
+      background: #0078d4;
+      color: white;
+      border: none;
+      padding: 4px 14px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    /* ===== 底部 ===== */
+    .footer {
+      border-top: 1px solid #e0e0e0;
+      padding: 5px 16px;
+      font-size: 12px;
+      color: #999;
+      background: #fafafa;
+    }
+  </style>
+</head>
+<body>
+  <!-- ========== 应用容器 ========== -->
+  <div class="app">
+
+    <!-- 状态栏 -->
+    <div class="status-bar">
+      <span class="status-label">Word：</span>
+      <span class="status-ok">✅ 已连接 - 论文.docx</span>
+      <div class="spacer"></div>
+      <span class="badge badge-green">`+数字 ON</span>
+      <span class="badge badge-blue">重连</span>
+    </div>
+
+    <!-- 主体 -->
+    <div class="content">
+
+      <!-- 输入区 -->
+      <div class="section-title">粘贴参考文献：</div>
+      <div class="input-area">
+        <div class="line"><span class="hl">[1]</span> 张三, 李四. 人工智能研究综述[J]. 计算机学报, 2020.</div>
+        <div class="line"><span class="hl">[2]</span> 王五, 赵六. 机器学习算法与应用[M]. 北京: 清华大学出版社, 2019.</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary">解析引用</button>
+        <button class="btn-secondary">清空</button>
+        <span class="count-tag">共 2 条 · 1~2 快捷键</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- 引用列表 -->
+      <div class="list-label">引用选项（点击「插入」或按 `+数字 快捷键）：</div>
+
+      <div class="card-list">
+        <!-- 卡片 1 -->
+        <div class="card">
+          <span class="card-num">1</span>
+          <span class="card-text">张三, 李四. 人工智能研究综述[J]. 计算机学报, 2020, 43(5): 987-1005.</span>
+          <button class="card-btn">插入</button>
+        </div>
+
+        <!-- 卡片 2 -->
+        <div class="card">
+          <span class="card-num">2</span>
+          <span class="card-text">王五, 赵六. 机器学习算法与应用[M]. 北京: 清华大学出版社, 2019.</span>
+          <button class="card-btn">插入</button>
+        </div>
+
+        <!-- 空态卡片 -->
+        <div class="card" style="border: 1px dashed #ccc; justify-content: center; padding: 24px; opacity: 0.5;">
+          <span style="font-size: 13px; color: #999;">+ 添加更多引用 ...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部 -->
+    <div class="footer">就绪</div>
+  </div>
+</body>
+</html>
